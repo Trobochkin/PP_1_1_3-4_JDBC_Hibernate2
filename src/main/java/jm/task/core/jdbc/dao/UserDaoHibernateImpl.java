@@ -22,20 +22,34 @@ public class UserDaoHibernateImpl implements UserDao {
                   `name` VARCHAR(45) NOT NULL,
                   `lastName` VARCHAR(45) NOT NULL,
                   `age` INT NOT NULL)""";
-        try (Session session = Util.getSessionFactory().openSession()) {
-            Transaction transaction = session.beginTransaction();
+        Session session = Util.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        try {
             session.createSQLQuery(sql).executeUpdate();
             transaction.commit();
+        } catch (Exception e) {
+            assert transaction != null;
+            transaction.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
         }
 
     }
     @Override
     public void dropUsersTable() {
         String sql = "DROP TABLE IF EXISTS `newbase`.`User`";
-        try (Session session = Util.getSessionFactory().openSession()) {
-            Transaction transaction = session.beginTransaction();
+        Session session = Util.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        try {
             session.createSQLQuery(sql).executeUpdate();
             transaction.commit();
+        } catch (Exception e) {
+            assert transaction != null;
+            transaction.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
         }
     }
 
